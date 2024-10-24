@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    
+    <title>GREEN-API WhatsApp Integration</title>
+
+</head>
+<body>
+    <div class="jumbotron text-center">
+    <h2>GREEN-API Test Task</h2>
+    </div>
+
+    <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+
+    <form id="apiForm">
+        <label for="idInstance">ID Instance:</label>
+        <input type="text" id="idInstance" name="idInstance"><br><br>
+
+        <label for="apiTokenInstance">API Token Instance:</label>
+        <input type="text" id="apiTokenInstance" name="apiTokenInstance"><br><br>
+
+        
+        <button type="button" class="btn btn-primary" onclick="getSettings()">Get Settings</button>
+        <button type="button" class="btn btn-primary" onclick="getStateInstance()">Get State Instance</button><br><br>
+
+        <label for="chatId">Chat ID (e.g. 79999999999@c.us):</label>
+        <input type="text" id="chatId" name="chatId"><br><br>
+
+        <label for="message">Message:</label>
+        <input type="text" id="message" name="message"><br><br>
+        
+        <button type="button" class="btn btn-primary" onclick="sendMessage()">Send Message</button><br><br>
+
+        <label for="fileUrl">File URL:</label>
+        <input type="text" id="fileUrl" name="fileUrl"><br><br>
+
+        <label for="fileName">File Name:</label>
+        <input type="text" id="fileName" name="fileName"><br><br>
+
+        <button type="button"  class="btn btn-primary" onclick="sendFileByUrl()">Send File by URL</button>
+    </form>
+
+</div>
+<div class="col-sm-6">
+    <label>Ответ:</label>
+    <pre id="responseField"></pre>
+
+</div></div></div>
+
+    <script>
+        // Helper function to build the base API URL
+        function buildApiUrl(endpoint) {
+            const idInstance = document.getElementById('idInstance').value;
+            const apiTokenInstance = document.getElementById('apiTokenInstance').value;
+            return `https://api.green-api.com/waInstance${idInstance}/${endpoint}/${apiTokenInstance}`;
+        }
+
+        // Get Settings using REST API
+        async function getSettings() {
+            const url = buildApiUrl('getSettings');
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET'
+                });
+
+                const result = await response.json();
+                document.getElementById('responseField').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('responseField').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        // Get State Instance using REST API
+        async function getStateInstance() {
+            const url = buildApiUrl('getStateInstance');
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET'
+                });
+
+                const result = await response.json();
+                document.getElementById('responseField').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('responseField').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        // Send Message using REST API
+        async function sendMessage() {
+            const url = buildApiUrl('sendMessage');
+            const chatId = document.getElementById('chatId').value;
+            const message = document.getElementById('message').value;
+
+            const payload = {
+                chatId: chatId,
+                message: message
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                document.getElementById('responseField').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('responseField').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        // Send File by URL using REST API
+        async function sendFileByUrl() {
+            const url = buildApiUrl('sendFileByUrl');
+            const chatId = document.getElementById('chatId').value;
+            const fileUrl = document.getElementById('fileUrl').value;
+            const fileName = document.getElementById('fileName').value;
+
+            const payload = {
+                chatId: chatId,
+                urlFile: fileUrl,
+                fileName: fileName
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                document.getElementById('responseField').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('responseField').textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
