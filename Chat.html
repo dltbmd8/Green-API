@@ -152,6 +152,39 @@
                 document.getElementById('responseField').textContent = 'Error: ' + error.message;
             }
         }
+
+
+        async function sendFileByUrl() {
+            const url = buildApiUrl('sendFileByUrl');
+            const chatId = document.getElementById('chatId').value;
+            const fileUrl = document.getElementById('fileUrl').value;
+            const fileName = document.getElementById('fileName').value;
+
+            const payload = {
+                chatId: chatId,
+                urlFile: fileUrl,
+                fileName: fileName
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                document.getElementById('responseField').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('responseField').textContent = 'Error: ' + error.message;
+            }
+        }
     </script>
 </body>
 </html>
